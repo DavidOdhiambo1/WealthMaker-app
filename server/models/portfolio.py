@@ -19,11 +19,11 @@ class Portfolio(db.Model, SerializerMixin):
     
     
     @staticmethod
-    def get_or_create_by_asset_type(asset_type, user_id):
+    def get_or_create_by_asset_type(asset_type):
         """Automatically create a portfolio if it doesn't exist based on the asset type."""
-        portfolio = Portfolio.query.filter_by(name=asset_type, user_id=user_id).first()
+        portfolio = Portfolio.query.filter_by(name=asset_type).first()
         if not portfolio:
-            portfolio = Portfolio(name=asset_type, user_id=user_id)
+            portfolio = Portfolio(name=asset_type)
             db.session.add(portfolio)
             db.session.commit()
         return portfolio

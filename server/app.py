@@ -88,7 +88,7 @@ class Login(Resource):
                 session['user_id'] = user.id
                 print(f"Session after login: {session}") 
 
-                response = make_response(jsonify({"message":f"Welcome {user.username}."}), 200)
+                response = make_response(jsonify({"message":f"Welcome {user.full_name}."}), 200)
                 print("Response headers:", response.headers)
                 return response
 
@@ -99,11 +99,89 @@ class Logout(Resource):
         session.pop('user_id', None)
         return make_response(jsonify({"message": "Logged out successfully"}), 200)
 
+class Holdings(Resource):
+    def get(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
 
+        holdings = Holding.query.filter_by(user_id=user_id).all()
+        serialized_holdings = [holding.to_dict(rules=("-user.password",)) for holding in holdings]
+
+        return make_response(jsonify(serialized_holdings), 200)
     
+    def post(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        data = request.get_json()
+        asset_name = data['assetName']
+        asset_type = data['assetType']
+        buy_price = float(data['buyPrice'])
+        buy_date = datetime.strptime(data['date'], '%Y-%m-%d')
+
+        # Create or get the portfolio based on asset type
+        portfolio = Portfolio.get_or_create_by_asset_type(asset_type)
+
+        new_holding = Holding(
+            asset_name=asset_name,
+            asset_type=asset_type,
+            buy_price=buy_price,
+            buy_date=buy_date,
+            portfolio_id=portfolio.id,
+            user_id=user_id
+        )
+
+        db.session.add(new_holding)
+        db.session.commit()
+
+        return make_response(jsonify(new_holding.to_dict()), 201)
+
+class HoldingsById(Resource):
+    def put(self, holding_id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        data = request.get_json()
+        asset_name = data['assetName']
+        asset_type = data['assetType']
+        buy_price = float(data['buyPrice'])
+        buy_date = datetime.strptime(data['date'], '%Y-%m-%d')
+
+        holding = Holding.query.filter_by(id=holding_id, user_id=user_id).first()
+        if not holding:
+            return make_response(jsonify({"error": "Holding not found"}), 404)
+
+        holding.asset_name = asset_name
+        holding.asset_type = asset_type
+        holding.buy_price = buy_price
+        holding.buy_date = buy_date
+
+        db.session.commit()
+
+        return make_response(jsonify(holding.to_dict()), 200)
+    
+    def delete(self, holding_id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        holding = Holding.query.filter_by(id=holding_id, user_id=user_id).first()
+        if not holding:
+            return make_response(jsonify({"error": "Holding not found"}), 404)
+
+        db.session.delete(holding)
+        db.session.commit()
+
+        return make_response(jsonify({"message": "Holding deleted successfully"}), 200)
+
 api.add_resource(SignUp, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
+api.add_resource(Holdings, '/holdings')
+api.add_resource(HoldingsById, '/holdings/<int:holding_id>')
 
 
 
