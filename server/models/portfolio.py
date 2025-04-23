@@ -14,9 +14,8 @@ class Portfolio(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     holdings = db.relationship('Holding', back_populates='portfolio', cascade="all, delete-orphan")
+    investment_info = db.relationship('InvestmentInformation', back_populates='portfolio', cascade="all, delete-orphan")
    
-
-    
     
     @staticmethod
     def get_or_create_by_asset_type(asset_type):

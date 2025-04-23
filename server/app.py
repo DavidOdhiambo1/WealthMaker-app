@@ -1,14 +1,10 @@
-from flask import Flask, request, jsonify, make_response, session, render_template
-from models import User, Portfolio,  Holding
+from flask import Flask, request, jsonify, make_response, session
+from models import User, Portfolio, Holding, Goal, InvestmentInformation
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
-from sqlalchemy import func
-from sqlalchemy.orm import relationship, backref
 from flask_restful import Api, Resource
 from database import db
-from sqlalchemy.exc import IntegrityError
 import os
 from dotenv import load_dotenv
 import bcrypt
@@ -177,11 +173,87 @@ class HoldingsById(Resource):
 
         return make_response(jsonify({"message": "Holding deleted successfully"}), 200)
 
+class Goals(Resource):
+    def get(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        goals = Goal.query.filter_by(user_id=user_id).all()
+        serialized_goals = [goal.to_dict(rules=("-user",)) for goal in goals]
+
+        return make_response(jsonify(serialized_goals), 200)
+
+    def post(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        data = request.get_json()
+        goal_name = data['name']
+        target_amount = float(data['target_amount'])
+        current_amount = float(data['current_amount'])
+        target_date = datetime.strptime(data['deadline'], '%Y-%m-%d')
+
+        new_goal = Goal(
+            name=goal_name,
+            target_amount=target_amount,
+            current_amount=current_amount,  # Initialize current amount to 0
+            deadline=target_date,
+            user_id=user_id
+        )
+
+        db.session.add(new_goal)
+        db.session.commit()
+
+        return make_response(jsonify(new_goal.to_dict(rules=("-user",))), 201)
+
+class GoalsById(Resource):
+    def put(self, goal_id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        data = request.get_json()
+        goal_name = data['name']
+        target_amount = float(data['target_amount'])
+        current_amount = float(data['current_amount'])
+        target_date = datetime.strptime(data['deadline'], '%Y-%m-%d')
+
+        goal = Goal.query.filter_by(id=goal_id, user_id=user_id).first()
+        if not goal:
+            return make_response(jsonify({"error": "Goal not found"}), 404)
+
+        goal.name = goal_name
+        goal.target_amount = target_amount
+        goal.current_amount = current_amount
+        goal.deadline = target_date
+
+        db.session.commit()
+
+        return make_response(jsonify(goal.to_dict(rules=("-user",))), 200)
+    
+    def delete(self, goal_id):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        goal = Goal.query.filter_by(id=goal_id, user_id=user_id).first()
+        if not goal:
+            return make_response(jsonify({"error": "Goal not found"}), 404)
+
+        db.session.delete(goal)
+        db.session.commit()
+
+        return make_response(jsonify({"message": "Goal deleted successfully"}), 200)
+
 api.add_resource(SignUp, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
 api.add_resource(Holdings, '/holdings')
 api.add_resource(HoldingsById, '/holdings/<int:holding_id>')
+api.add_resource(Goals, '/goals')
+api.add_resource(GoalsById, '/goals/<int:goal_id>')
 
 
 
