@@ -8,18 +8,19 @@ const Dashboard = () => {
     const [selectedPortfolio, setSelectedPortfolio] = useState('All');
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetch("/holdings") // adjust the endpoint if needed
+    const fetchInvestments = () => {
+        setLoading(true);
+        fetch("/holdings")
             .then((res) => res.json())
             .then((data) => {
                 const grouped = {};
-            
+    
                 data.forEach((inv) => {
                     const portfolioName = inv.portfolio?.name || "Uncategorized";
                     if (!grouped[portfolioName]) {
                         grouped[portfolioName] = [];
                     }
-            
+    
                     grouped[portfolioName].push({
                         id: inv.id,
                         assetName: inv.asset_name,
@@ -28,12 +29,12 @@ const Dashboard = () => {
                         date: new Date(inv.buy_date).toISOString().split("T")[0],
                     });
                 });
-            
+    
                 const groupedArray = Object.entries(grouped).map(([portfolioName, investments]) => ({
                     portfolioName,
                     investments,
                 }));
-            
+    
                 setGroupedInvestments(groupedArray);
                 setLoading(false);
             })
@@ -41,6 +42,10 @@ const Dashboard = () => {
                 console.error("Error fetching investments:", err);
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        fetchInvestments();
     }, []);
     
     // Calculate the total investment value
@@ -49,15 +54,6 @@ const Dashboard = () => {
         total + group.investments.reduce((sum, inv) => sum + inv.buyPrice, 0), 0)
     : 0;
 
-    const handleEdit = (investment) => {
-        console.log("Edit clicked for:", investment);
-        // Open edit form/modal
-    };
-    
-    const handleDelete = (investment) => {
-        console.log("Delete clicked for:", investment);
-        // Trigger delete confirmation or API call
-    };
 
     
     if (loading) {
@@ -66,20 +62,22 @@ const Dashboard = () => {
 
     return (
         <div className="bg-gradient-to-r from-teal-100 to-blue-100 min-h-screen p-8">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-3xl mx-auto">
                 {/* Dashboard Header */}
                 <h1 className="text-3xl font-bold text-teal-800 text-center mb-8">Investment Dashboard</h1>
                 
                 {/* Total Investments Card */}
-                <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                    <h2 className="text-2xl font-semibold text-teal-800 mb-4">Total Investments</h2>
-                    <p className="text-3xl font-bold text-teal-600">
+                <div className="bg-white p-2 rounded-lg shadow-md mb-8">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-semibold text-teal-800">Total Investments</h2>
+                        <p className="text-3xl font-bold text-teal-600">
                         Ksh. {totalInvestmentValue.toLocaleString()}
-                    </p>
+                        </p>
+                    </div>
                 </div>
                 
                 {/* Investments List by Portfolio */}
-                <div className="bg-white p-6 rounded-lg shadow-md mb-8 flex flex-col md:flex-row gap-4">
+                <div className="bg-white p-2 rounded-lg shadow-md mb-2 flex flex-col md:flex-row gap-4">
                     <input
                         type="text"
                         placeholder="Search by asset name or type"
@@ -100,7 +98,7 @@ const Dashboard = () => {
                         ))}
                     </select>
                 </div>
-                <div>
+                <div className="bg-teal-100 max-w-2xl p-2 rounded-lg shadow-md mx-auto">
                     {groupedInvestments
                         .filter(group =>
                             selectedPortfolio === 'All' || group.portfolioName === selectedPortfolio
@@ -114,14 +112,13 @@ const Dashboard = () => {
                             if (filteredInvestments.length === 0) return null;
 
                             return (
-                                <div key={idx} className="mb-10">
-                                    <h3 className="text-xl font-semibold text-teal-700 mb-4">
+                                <div key={idx} className="mb-4">
+                                    <h3 className="text-xl font-semibold text-teal-700 mb-2">
                                         {group.portfolioName}
                                     </h3>
                                     <InvestmentTable
                                         investments={filteredInvestments}
-                                        onEdit={handleEdit}
-                                        onDelete={handleDelete}
+                                        onRefresh={fetchInvestments}   
                                     />
                                 </div>
                             );

@@ -5,7 +5,12 @@ const EditInvestment = ({onsubmit, onchange, formdata}) => {
     <div>
       <h1>Edit Investment</h1>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form  onSubmit={onsubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form onSubmit={(e) => {
+                e.preventDefault(); 
+                onsubmit();}
+            } 
+            className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+            >
                     {/* Asset Name/Description */}
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="assetName">
@@ -79,7 +84,7 @@ const EditInvestment = ({onsubmit, onchange, formdata}) => {
                         type="submit"
                         className="bg-teal-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-300 w-full"
                     >
-                        Add Investment
+                        Update Investment
                     </button>
                 </form>
         </div>   
