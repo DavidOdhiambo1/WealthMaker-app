@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import coins from '../assets/coins.jpg'; // Placeholder for the image
-
+import coins from '../assets/coins.jpg'; 
 const LandingPage = () => {
     return (
         <div className="relative min-h-screen">

@@ -11,7 +11,7 @@ const EditInvestment = ({onsubmit, onchange, formdata}) => {
             } 
             className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
             >
-                    {/* Asset Name/Description */}
+                   
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="assetName">
                             Asset Name/Description
@@ -27,7 +27,7 @@ const EditInvestment = ({onsubmit, onchange, formdata}) => {
                         />
                     </div>
 
-                    {/* Asset Type Dropdown */}
+                    
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="assetType">
                             Asset Type
@@ -50,7 +50,7 @@ const EditInvestment = ({onsubmit, onchange, formdata}) => {
                         </select>
                     </div>
 
-                    {/* Buy Price */}
+                   
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="buyPrice">
                             Buy price
@@ -65,7 +65,7 @@ const EditInvestment = ({onsubmit, onchange, formdata}) => {
                         />
                     </div>
 
-                    {/* Date of Investment */}
+                    
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="date">
                             Date of Investment
@@ -79,7 +79,7 @@ const EditInvestment = ({onsubmit, onchange, formdata}) => {
                         />
                     </div>
 
-                    {/* Submit Button */}
+                    
                     <button
                         type="submit"
                         className="bg-teal-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-300 w-full"

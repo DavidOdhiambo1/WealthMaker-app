@@ -1,5 +1,5 @@
 import React , {useEffect, useState} from 'react';
-import InvestmentTable from './InvestmentTable'; // Import the InvestmentTable component
+import InvestmentTable from './InvestmentTable'; 
 
 
 const Dashboard = () => {

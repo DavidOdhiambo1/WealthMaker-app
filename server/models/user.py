@@ -8,7 +8,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
-    serialize_rules = ( '-holdings.user', )
+    serialize_rules = ( '-holdings.user', '-goals.user',)
     
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String, unique=True, nullable=False)
@@ -19,6 +19,7 @@ class User(db.Model, SerializerMixin):
     # Relationships
    
     holdings = db.relationship('Holding', back_populates='user', cascade="all, delete-orphan")
+    goals = db.relationship('Goal', back_populates='user', cascade="all, delete-orphan")
     
 
     @validates('full_name')

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import EditInvestment from './EditInvestment';
-import { useNavigate } from 'react-router-dom';
+
 
 const InvestmentTable = ({ investments, onRefresh }) => {
     
     const [selectedInvestment, setSelectedInvestment] = useState(null);
-    const navigate = useNavigate();
+    
     const [showForm, setShowForm] = useState(false)
     const [formData, setFormData] = useState(null);
 
