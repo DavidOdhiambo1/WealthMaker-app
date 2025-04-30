@@ -14,6 +14,7 @@ const InvestmentForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const investmentData = {
+
             assetName,
             assetType,
             buyPrice,
@@ -28,13 +29,22 @@ const InvestmentForm = () => {
             body: JSON.stringify(investmentData),
         })
             .then((res) => {
-                if (res.ok) {
-                    navigate("/investments");
-                } else {
-                    alert("Failed to add investment. Please try again.");
+                if (res.status === 401) {
+                alert("Please log in to add your investments.");
+                navigate("/login");
+                throw new Error("Unauthorized");
                 }
-            })
-            .catch((error) => console.error("Error:", error));
+
+                if (res.ok) {
+                navigate("/investments");
+                } else {
+                alert("Failed to add investment. Please try again.");
+                throw new Error("Failed to add investment");
+                }
+        })
+            .catch((error) => {
+                console.error("Error:", error);
+        });
     }
     
 

@@ -7,6 +7,7 @@ const HomePage = () => {
         <>
             <Navbar />
             <Dashboard />
+            
         </>
     )
 }

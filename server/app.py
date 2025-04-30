@@ -82,10 +82,9 @@ class Login(Resource):
         if user:
             if bcrypt.checkpw(password.encode('utf8'), user.password.encode('utf8')):
                 session['user_id'] = user.id
-                print(f"Session after login: {session}") 
-
-                response = make_response(jsonify({"message":f"Welcome {user.full_name}."}), 200)
-                print("Response headers:", response.headers)
+                
+                response = make_response(jsonify(user.to_dict(rules=("-password", "-holdings", "-goals"))), 200)
+                
                 return response
 
         return make_response(jsonify({"error": "Invalid email or password"}), 401)
@@ -247,6 +246,41 @@ class GoalsById(Resource):
 
         return make_response(jsonify({"message": "Goal deleted successfully"}), 200)
 
+class Info(Resource):
+    def get(self):
+        investment_info = InvestmentInformation.query.all()
+        if not investment_info:
+            return make_response(jsonify({"error": "Investment information not found"}), 404)
+
+        info_list = [info.to_dict() for info in investment_info]
+
+        return make_response(jsonify(info_list), 200)
+    
+    def post(self):
+        user_id = session.get('user_id')
+        if not user_id:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        data = request.get_json()
+        title = data['resource_title']
+        link = data['resource_link']
+        author = data['resource_author']
+        asset_type = data['asset_type']
+
+        new_info = InvestmentInformation(
+            title=title,
+            link=link,
+            author=author,
+            asset_type=asset_type,
+        )
+
+        db.session.add(new_info)
+        db.session.commit()
+
+        return make_response(jsonify(new_info.to_dict()), 201)
+
+        
+
 api.add_resource(SignUp, '/signup')
 api.add_resource(Login, '/login')
 api.add_resource(Logout, '/logout')
@@ -254,6 +288,7 @@ api.add_resource(Holdings, '/holdings')
 api.add_resource(HoldingsById, '/holdings/<int:holding_id>')
 api.add_resource(Goals, '/goals')
 api.add_resource(GoalsById, '/goals/<int:goal_id>')
+api.add_resource(Info, '/info')
 
 
 

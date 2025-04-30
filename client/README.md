@@ -1,70 +1,90 @@
-# Getting Started with Create React App
+# About WealthMaker
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack application to track, manage, and grow your investments and overall net worth. It includes features for managing investment goals, holdings, and related financial insights..
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+###  User Features
 
-### `npm start`
+- User registration & login (with session-based auth)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Create, read, update, delete (CRUD) investment holdings
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Create and track financial goals
 
-### `npm test`
+- Browse helpful investment resources
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- View portfolio and net worth summary
 
-### `npm run build`
+### Admin/Backend
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- RESTful API with Flask + Flask-RESTful
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- SQLite (or any SQLAlchemy-compatible DB)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Auth with session + bcrypt
 
-### `npm run eject`
+- Modular models and migrations
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Tech Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+| Frontend         | Backend         | Database    | Others            |
+|------------------|------------------|-------------|-------------------|
+| React            | Flask (RESTful)  | SQLite      | Flask-Migrate     |
+| React Router     | Flask-CORS       | SQLAlchemy  | bcrypt for hashing|
+| Context API (Auth) | Flask-Session  |             | dotenv            |
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Setup Instructions
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Backend Setup (Flask)
 
-## Learn More
+1. Navigate to server/:
+```
+cd server
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+2.Run the backend server:
+```
+python app.py
+```
+Server will run at http://localhost:5555
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Frontend Setup (React)
 
-### Code Splitting
+1. Navigate to client/:
+```
+cd client
+npm install
+npm start
+```
+App will run at http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+# API Endpoints (Flask)
 
-### Analyzing the Bundle Size
+| Endpoint              | Method | Description                         |
+|-----------------------|--------|-------------------------------------|
+| `/signup`             | POST   | Register a new user                 |
+| `/login`              | POST   | Login and start a session           |
+| `/logout`             | DELETE | End user session                    |
+| `/holdings`           | GET/POST | View or add user holdings          |
+| `/holdings/<id>`      | PUT/DELETE | Update or delete a holding       |
+| `/goals`              | GET/POST | View or create financial goals     |
+| `/goals/<id>`         | PUT/DELETE | Update or delete a goal          |
+| `/info`               | GET/POST | Investment information resources   |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+# Future enhancements
 
-### Making a Progressive Web App
+- Investment growth visualization (charts)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Email/password reset functionality
 
-### Advanced Configuration
+- OAuth login (Google/GitHub)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Real-time stock/crypto price APIs
 
-### Deployment
+# License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+This project is licensed under the MIT License.
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

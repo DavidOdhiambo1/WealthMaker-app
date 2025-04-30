@@ -33,12 +33,20 @@ const LandingPage = () => {
                 <p className="text-lg text-black-700 mb-8 drop-shadow-lg">
                     Empowering you with smart tools to manage, grow, and track your wealth effortlessly.
                 </p>
-                <Link
-                    to="/login"
-                    className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                    Login
-                </Link>
+                <div className="flex flex-col items-start space-y-4">
+                    <Link
+                        to="/login"
+                        className="inline-block bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                    >
+                        Login
+                    </Link>
+                    <Link
+                        to="/info"
+                        className="inline-block bg-teal-500 text-red px-8 py-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                    >
+                        View our Investment information resources
+                    </Link>
+                </div>
             </div>
         </div>
     );
