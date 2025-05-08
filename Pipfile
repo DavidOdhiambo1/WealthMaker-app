@@ -12,6 +12,7 @@ sqlalchemy-serializer = "*"
 flask-cors = "*"
 flask-restful = "*"
 bcrypt = "*"
+waitress = "*"
 
 [dev-packages]
 
