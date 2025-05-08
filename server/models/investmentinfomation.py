@@ -1,4 +1,4 @@
-from database import db
+from server.database import db
 from sqlalchemy_serializer import SerializerMixin
 
 class InvestmentInformation(db.Model, SerializerMixin):
