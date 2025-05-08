@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from datetime import datetime
 from flask_restful import Api, Resource
-from database import db
+from server.database import db
 import os
 from dotenv import load_dotenv
 import bcrypt
