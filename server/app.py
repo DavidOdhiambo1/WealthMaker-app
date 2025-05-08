@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response, session
-from models import User, Portfolio, Holding, Goal, InvestmentInformation
+from server.models import User, Portfolio, Holding, Goal, InvestmentInformation
 from flask_cors import CORS
 from flask_migrate import Migrate
 from datetime import datetime
